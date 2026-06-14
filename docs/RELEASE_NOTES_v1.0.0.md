@@ -34,7 +34,11 @@ The notarized release artifact will use `ViewMD-1.0.0-mac-universal.zip` in a fu
 
 To make ViewMD the default app for Markdown files, open Finder's **Get Info** panel for a `.md` file, choose ViewMD under **Open with**, then choose **Change All**.
 
-Apple's guide: https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac
+Apple guidance:
+
+- Unknown developer override: https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac
+- Safe app opening guidance: https://support.apple.com/en-us/102445
+- Mac distribution overview: https://developer.apple.com/macos/distribution/
 
 ## Build From Source
 

@@ -55,7 +55,11 @@ This build is not notarized because ViewMD is not yet distributed through the pa
 
 If you want ViewMD to open Markdown files by default, use Finder's **Get Info** panel and choose **Change All** under **Open with**.
 
-Apple's guide for opening an app from an unknown developer: [Open a Mac app from an unknown developer](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac)
+Apple guidance:
+
+- [Open a Mac app from an unknown developer](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac)
+- [Safely open apps on your Mac](https://support.apple.com/en-us/102445)
+- [Mac distribution overview](https://developer.apple.com/macos/distribution/)
 
 ## Privacy
 

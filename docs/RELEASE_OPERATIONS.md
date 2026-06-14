@@ -27,7 +27,11 @@ The unsigned public beta artifacts are:
 
 macOS will warn users because this build is not notarized. Do not tell users to disable Gatekeeper globally. Use Apple's per-app override instructions only.
 
-Apple guidance: https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac
+Apple guidance:
+
+- Unknown developer override: https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac
+- Safe app opening guidance: https://support.apple.com/en-us/102445
+- Mac distribution overview: https://developer.apple.com/macos/distribution/
 
 ## Future Notarized Release Path
 
