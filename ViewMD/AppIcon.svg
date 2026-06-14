@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 100 100" role="img" aria-label="ViewMD Folded Reader app icon">
-  <rect x="12" y="8" width="76" height="84" rx="18" fill="#1f513e"/>
-  <path d="M30 14h28l18 18v54H30z" fill="none" stroke="#f7faf7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M58 14v18h18" fill="none" stroke="#9fd3bd" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M39 43h28M39 55h28M39 67h18" fill="none" stroke="#f7faf7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
