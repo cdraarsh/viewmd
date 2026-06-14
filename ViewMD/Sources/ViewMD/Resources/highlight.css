@@ -1,0 +1,20 @@
+/* Syntax highlighting for dark code blocks (bg: #0b1220) */
+pre code .keyword { color: #ff7b72; font-weight: 500; }
+pre code .string { color: #a5d6ff; }
+pre code .comment { color: #8b949e; font-style: italic; }
+pre code .number { color: #79c0ff; }
+pre code .function { color: #d2a8ff; }
+pre code .type { color: #7ee787; }
+pre code .operator { color: #ff7b72; }
+pre code .punctuation { color: #c9d1d9; }
+pre code .variable { color: #ffa657; }
+pre code .attr { color: #79c0ff; }
+pre code .tag { color: #7ee787; }
+
+/* Inline code (light background) */
+code .keyword { color: #d73a49; font-weight: 600; }
+code .string { color: #032f62; }
+code .comment { color: #6a737d; font-style: italic; }
+code .number { color: #005cc5; }
+code .function { color: #6f42c1; }
+code .type { color: #22863a; }
