@@ -4,7 +4,6 @@ Status: superseded by `docs/RELEASE_NOTES_v1.0.0.md`
 Audience: AI power users on Mac  
 Distribution: GitHub Releases
 Feedback link: https://github.com/cdraarsh/viewmd/issues/new?template=feedback.yml
-Apple guidance: https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac, https://support.apple.com/en-us/102445, https://developer.apple.com/macos/distribution/
 
 ## Release Title
 
