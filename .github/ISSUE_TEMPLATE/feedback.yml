@@ -1,0 +1,62 @@
+name: Public beta feedback
+description: Share what happened when you tried ViewMD with a real AI-generated Markdown file.
+title: "[Feedback]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying the ViewMD public beta. The most useful feedback is about real files and real install friction.
+  - type: dropdown
+    id: source
+    attributes:
+      label: Where did the Markdown file come from?
+      options:
+        - ChatGPT
+        - Claude
+        - Cursor
+        - Codex or another coding agent
+        - Obsidian, notes, or docs workflow
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: outcome
+    attributes:
+      label: What did you complete?
+      options:
+        - Installed ViewMD and opened my own Markdown file
+        - Installed ViewMD but did not open a file
+        - Opened a file but did not export PDF
+        - Opened a file and exported PDF
+        - Could not install or launch the app
+    validations:
+      required: true
+  - type: textarea
+    id: stuck
+    attributes:
+      label: Where did you get stuck?
+      description: Include the first confusing step, even if you figured it out later.
+      placeholder: "Example: macOS warned me about opening the app and I was not sure what to do next."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect ViewMD to do?
+      placeholder: "Example: I expected the PDF to appear in the same folder as report.md."
+    validations:
+      required: false
+  - type: textarea
+    id: reuse
+    attributes:
+      label: Would you use this again?
+      description: A short yes/no/maybe with why is enough.
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: "Example: macOS 15.5"
+    validations:
+      required: false

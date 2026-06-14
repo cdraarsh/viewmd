@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ViewMD - AI Markdown reader for Mac</title>
+  <meta name="description" content="ViewMD makes AI-generated Markdown readable on your Mac and exports polished PDFs beside the source file.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --ink: #17201b;
+      --muted: #617069;
+      --paper: #f7faf7;
+      --canvas: #eef4ef;
+      --line: #cddbd3;
+      --green: #1f513e;
+      --green-2: #2f7357;
+      --blue: #2b6cb0;
+      --shadow: 0 28px 80px rgba(24, 52, 40, 0.16);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 12%, rgba(43, 108, 176, 0.16), transparent 28rem),
+        radial-gradient(circle at 82% 4%, rgba(47, 115, 87, 0.18), transparent 24rem),
+        linear-gradient(135deg, #f7fbf8 0%, #e7f1ea 52%, #dceaf7 100%);
+      font-family: "Iowan Old Style", "Palatino", "Book Antiqua", serif;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.28;
+      background-image:
+        linear-gradient(rgba(23, 32, 27, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 32, 27, 0.035) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(to bottom, black, transparent 82%);
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+      position: relative;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 0 42px;
+      font-family: "Avenir Next", "Gill Sans", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 44px;
+      color: var(--paper);
+      background: var(--green);
+      border-radius: 8px;
+      box-shadow: 5px 5px 0 rgba(43, 108, 176, 0.22);
+    }
+
+    .mark svg {
+      width: 30px;
+      height: 30px;
+      color: var(--paper);
+    }
+
+    nav a {
+      color: var(--ink);
+      margin-left: 22px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.04fr 0.96fr;
+      gap: 42px;
+      align-items: center;
+      min-height: 680px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--green);
+      font-family: "Avenir Next", "Gill Sans", sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 42px;
+      height: 2px;
+      background: var(--blue);
+    }
+
+    h1 {
+      margin: 18px 0 22px;
+      font-size: clamp(48px, 8vw, 92px);
+      line-height: 0.92;
+      letter-spacing: 0;
+      max-width: 11ch;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: clamp(20px, 2.4vw, 27px);
+      line-height: 1.38;
+      max-width: 620px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 32px;
+      font-family: "Avenir Next", "Gill Sans", sans-serif;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+      border: 2px solid var(--green);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(34, 72, 58, 0.18);
+    }
+
+    .button.primary {
+      color: var(--paper);
+      background: var(--green);
+    }
+
+    .button.secondary {
+      color: var(--green);
+      background: rgba(247, 250, 247, 0.5);
+    }
+
+    .hero-preview {
+      margin: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 27, 0.12);
+      background: rgba(247, 250, 247, 0.7);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-preview img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .hero-preview figcaption {
+      padding: 14px 18px;
+      color: var(--muted);
+      font-family: "Avenir Next", "Gill Sans", sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+      background: rgba(247, 250, 247, 0.9);
+    }
+
+    .stack {
+      position: relative;
+      min-height: 560px;
+    }
+
+    .document {
+      position: absolute;
+      right: 0;
+      width: min(470px, 90%);
+      min-height: 600px;
+      padding: 46px 42px;
+      background: var(--paper);
+      border: 1px solid rgba(23, 32, 27, 0.12);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      transform: rotate(2deg);
+      animation: rise 700ms ease both;
+    }
+
+    .raw {
+      position: absolute;
+      left: 0;
+      top: 86px;
+      width: min(390px, 78%);
+      padding: 26px;
+      color: #d8e8df;
+      background: #16231d;
+      border-radius: 22px;
+      box-shadow: 0 22px 60px rgba(12, 22, 17, 0.32);
+      font: 14px/1.55 "SF Mono", "Menlo", monospace;
+      transform: rotate(-5deg);
+      animation: rise 700ms 120ms ease both;
+    }
+
+    .document h2 {
+      margin: 0 0 18px;
+      font-size: 34px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .document .rule {
+      height: 1px;
+      background: var(--line);
+      margin: 24px 0;
+    }
+
+    .document ul {
+      padding-left: 22px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .metric {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      font-family: "Avenir Next", "Gill Sans", sans-serif;
+      font-size: 14px;
+    }
+
+    section {
+      margin-top: 72px;
+    }
+
+    .section-title {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 22px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1.5;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      padding: 26px;
+      min-height: 230px;
+      background: rgba(247, 250, 247, 0.64);
+      border: 1px solid rgba(23, 32, 27, 0.12);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 50px rgba(42, 31, 17, 0.08);
+    }
+
+    .card b {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--green);
+      font-family: "Avenir Next", "Gill Sans", sans-serif;
+      font-size: 13px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.48;
+    }
+
+    .proof {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 34px;
+      background: var(--green);
+      color: var(--paper);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel.light {
+      background: rgba(247, 250, 247, 0.7);
+      color: var(--ink);
+      border: 1px solid rgba(23, 32, 27, 0.12);
+    }
+
+    .panel h3 {
+      margin: 0 0 12px;
+      font-size: 32px;
+      letter-spacing: 0;
+    }
+
+    .panel p,
+    .panel li {
+      color: inherit;
+      opacity: 0.82;
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    footer {
+      margin-top: 82px;
+      padding: 34px;
+      color: var(--paper);
+      background: #17201b;
+      border-radius: var(--radius);
+      font-family: "Avenir Next", "Gill Sans", sans-serif;
+    }
+
+    footer a {
+      color: #9fd3bd;
+      margin-left: 12px;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(20px) rotate(var(--tilt, 0deg));
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 860px) {
+      nav {
+        display: none;
+      }
+
+      .hero,
+      .section-title,
+      .proof {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .stack {
+        min-height: 520px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .document {
+        right: 0;
+        width: 86%;
+        padding: 34px 28px;
+      }
+
+      .raw {
+        width: 78%;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 100 100" focusable="false">
+            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M30 14h28l18 18v54H30z" stroke-width="4"/>
+              <path d="M58 14v18h18" stroke-width="4"/>
+              <path d="M39 43h28" stroke-width="4"/>
+              <path d="M39 55h28" stroke-width="4"/>
+              <path d="M39 67h18" stroke-width="4"/>
+            </g>
+          </svg>
+        </span>
+        ViewMD
+      </div>
+      <nav aria-label="Primary">
+        <a href="#workflow">Workflow</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#feedback">Feedback</a>
+        <a href="#download">Download</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div>
+          <div class="eyebrow">AI Markdown reader for Mac</div>
+          <h1 id="hero-title">Your AI gives you Markdown. ViewMD makes it readable.</h1>
+          <p>Open AI-generated `.md` files directly on your Mac, read them in a polished document view, and export a clean PDF beside the original. The first public beta is unsigned and built for technical early users.</p>
+          <div class="actions">
+            <a class="button primary" href="https://github.com/cdraarsh/viewmd/releases/tag/v1.0.0">Download Unsigned Public Beta</a>
+            <a class="button secondary" href="https://github.com/cdraarsh/viewmd#build-from-source">Build from Source</a>
+          </div>
+        </div>
+
+        <figure class="hero-preview">
+          <img src="assets/viewmd-feedback-beta-preview.png" alt="ViewMD showing raw AI Markdown beside a polished document preview">
+          <figcaption>Public release preview using the launch example: raw AI Markdown becomes a readable document and shareable PDF.</figcaption>
+        </figure>
+      </section>
+
+      <section id="workflow">
+        <div class="section-title">
+          <h2>From AI output to normal Mac document.</h2>
+          <p>ViewMD is not trying to be another Markdown editor. It focuses on the common handoff: your AI creates a `.md` file, and you need to read or send it.</p>
+        </div>
+        <div class="cards">
+          <div class="card">
+            <b>Step 1</b>
+            <p>Double-click a Markdown file from ChatGPT, Claude, Codex, Cursor, or another AI workflow.</p>
+          </div>
+          <div class="card">
+            <b>Step 2</b>
+            <p>Read headings, lists, tables, code blocks, and task lists in a polished PDF-style layout.</p>
+          </div>
+          <div class="card">
+            <b>Step 3</b>
+            <p>Export `report.pdf` beside `report.md`, ready to share without hunting through Downloads.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="privacy" class="proof">
+        <div class="panel">
+          <h3>Local by default.</h3>
+          <p>Your Markdown files are opened on your Mac. ViewMD does not upload file contents to a server.</p>
+        </div>
+        <div class="panel light">
+          <h3>Honest V1 scope.</h3>
+          <ul>
+            <li>Reader-first, not a Markdown editor.</li>
+            <li>Distributed first through GitHub Releases as an unsigned public beta.</li>
+            <li>Some advanced Markdown extensions may render differently than AI previews.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="feedback">
+        <div class="section-title">
+          <h2>Help shape the public beta.</h2>
+          <p>ViewMD is looking for Mac users who already get Markdown from AI tools. Try one real file, export one PDF, and tell us where the workflow breaks.</p>
+        </div>
+        <div class="cards">
+          <div class="card">
+            <b>Try</b>
+            <p>Open a real `.md` file from ChatGPT, Claude, Cursor, Codex, or another agent workflow.</p>
+          </div>
+          <div class="card">
+            <b>Export</b>
+            <p>Use <strong>Export PDF</strong> and confirm whether the PDF lands beside the original source file.</p>
+          </div>
+          <div class="card">
+            <b>Report</b>
+            <p>Send the first point of confusion, the file type you tried, and whether you would use it again.</p>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/cdraarsh/viewmd/issues/new?template=feedback.yml">Send Public Beta Feedback</a>
+          <a class="button secondary" href="https://github.com/cdraarsh/viewmd/issues/new?template=bug_report.yml">Report a Bug</a>
+        </div>
+      </section>
+
+      <section id="download">
+        <div class="section-title">
+          <h2>Download the unsigned public beta.</h2>
+          <p>The first public build ships through GitHub Releases with a SHA-256 checksum and an explicit macOS warning. It is not notarized yet, so macOS may require Apple's per-app Open Anyway flow.</p>
+        </div>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/cdraarsh/viewmd/releases/tag/v1.0.0">Go to Unsigned Release</a>
+          <a class="button secondary" href="https://github.com/cdraarsh/viewmd#build-from-source">Build from Source</a>
+          <a class="button secondary" href="RELEASE_NOTES_v1.0.0.md">Read Release Notes</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      ViewMD is built for one job: make AI-generated Markdown readable and shareable on your Mac.
+      <a href="https://github.com/cdraarsh/viewmd">GitHub</a>
+      <a href="https://github.com/cdraarsh/viewmd/issues/new?template=feedback.yml">Feedback</a>
+    </footer>
+  </div>
+</body>
+</html>
