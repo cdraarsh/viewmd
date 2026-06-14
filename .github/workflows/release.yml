@@ -34,7 +34,7 @@ jobs:
       VIEWMD_SIGN_IDENTITY: ${{ secrets.APPLE_DEVELOPER_ID_SIGNING_IDENTITY }}
       VIEWMD_NOTARY_PROFILE: viewmd-notary
       RELEASE_TAG: ${{ github.event.inputs.tag || github.ref_name }}
-      RELEASE_DRAFT: ${{ github.event.inputs.draft || 'false' }}
+      RELEASE_DRAFT: ${{ github.event.inputs.draft || 'true' }}
       RELEASE_DISTRIBUTION: ${{ github.event.inputs.distribution || 'unsigned-public-beta' }}
 
     steps:
