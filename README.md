@@ -131,4 +131,3 @@ The app bundle is created at `ViewMD/build/ViewMD.app`; the unsigned release zip
 ## Project Docs
 
 - [Release notes](docs/RELEASE_NOTES_v1.0.0.md)
-- [Release operations](docs/RELEASE_OPERATIONS.md)
