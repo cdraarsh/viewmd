@@ -47,6 +47,12 @@ This build is not notarized because ViewMD is not yet distributed through the pa
    ```bash
    shasum -a 256 -c ViewMD-1.0.0-mac-universal-unsigned.zip.sha256
    ```
+   > [!NOTE]
+   > Safari may automatically unzip downloads and remove the original `.zip`, which makes checksum verification fail because the file is missing. If this happens, download both files again with another browser or use Terminal:
+   > ```bash
+   > curl -L -O https://github.com/cdraarsh/viewmd/releases/download/v1.0.0/ViewMD-1.0.0-mac-universal-unsigned.zip
+   > curl -L -O https://github.com/cdraarsh/viewmd/releases/download/v1.0.0/ViewMD-1.0.0-mac-universal-unsigned.zip.sha256
+   > ```
 3. Unzip the file.
 4. Move `ViewMD.app` to Applications.
 5. Try opening ViewMD once.
@@ -93,16 +99,25 @@ Requirements:
 
 - macOS 13 or newer
 - Swift 5.9 or newer
+- Xcode.app if you want to run tests; Command Line Tools are enough for building
 
 For technical users, building locally is the cleaner trust path.
 
 ```bash
 cd ViewMD
 swift build
-swift test
 cd ..
 ./scripts/release-build.sh --unsigned-public-beta
 ```
+
+Optional developer check:
+
+```bash
+cd ViewMD
+swift test
+```
+
+`swift test` requires the full Xcode.app toolchain because the tests use XCTest. It can fail with standalone Command Line Tools even when `swift build` succeeds.
 
 For a quick local app bundle without the release zip:
 
@@ -116,4 +131,3 @@ The app bundle is created at `ViewMD/build/ViewMD.app`; the unsigned release zip
 ## Project Docs
 
 - [Release notes](docs/RELEASE_NOTES_v1.0.0.md)
-- [Release operations](docs/RELEASE_OPERATIONS.md)

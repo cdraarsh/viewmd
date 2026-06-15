@@ -26,6 +26,12 @@ The notarized release artifact will use `ViewMD-1.0.0-mac-universal.zip` in a fu
    ```bash
    shasum -a 256 -c ViewMD-1.0.0-mac-universal-unsigned.zip.sha256
    ```
+   > [!NOTE]
+   > Safari may automatically unzip downloads and remove the original `.zip`, which makes checksum verification fail because the file is missing. If this happens, download both files again with another browser or use Terminal:
+   > ```bash
+   > curl -L -O https://github.com/cdraarsh/viewmd/releases/download/v1.0.0/ViewMD-1.0.0-mac-universal-unsigned.zip
+   > curl -L -O https://github.com/cdraarsh/viewmd/releases/download/v1.0.0/ViewMD-1.0.0-mac-universal-unsigned.zip.sha256
+   > ```
 3. Unzip the file.
 4. Move `ViewMD.app` to Applications.
 5. Try opening ViewMD once.
@@ -47,9 +53,19 @@ For technical users, building locally is the cleaner trust path:
 ```bash
 git clone https://github.com/cdraarsh/viewmd.git
 cd viewmd/ViewMD
-swift test
-./build-app.sh --unsigned-public-beta
+swift build
+cd ..
+./scripts/release-build.sh --unsigned-public-beta
 ```
+
+Optional developer check:
+
+```bash
+cd ViewMD
+swift test
+```
+
+`swift test` requires the full Xcode.app toolchain because the tests use XCTest. It can fail with standalone Command Line Tools even when `swift build` succeeds.
 
 ## Included
 
