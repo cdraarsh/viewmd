@@ -101,4 +101,11 @@ After the final unsigned or signed zip is available, update `packaging/homebrew/
 
 1. Confirm the `sha256` value matches the final release zip.
 2. Commit the cask into a first-party tap, for example `cdraarsh/homebrew-viewmd`.
-3. Test with `brew install --cask ./Casks/viewmd.rb`.
+3. Test through a local tap, because modern Homebrew can reject direct installs from a standalone cask file:
+
+   ```bash
+   brew tap-new local/viewmd
+   mkdir -p "$(brew --repository local/viewmd)/Casks"
+   cp packaging/homebrew/Casks/viewmd.rb "$(brew --repository local/viewmd)/Casks/"
+   brew install --cask local/viewmd/viewmd
+   ```
