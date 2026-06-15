@@ -113,10 +113,7 @@ cd ViewMD
 
 The app bundle is created at `ViewMD/build/ViewMD.app`; the unsigned release zip and checksum are created under `ViewMD/build/dist/`.
 
-## Launch Docs
+## Project Docs
 
-- [Broad awareness launch plan](docs/BROAD_AWARENESS_LAUNCH.md)
-- [Launch copy](docs/LAUNCH_COPY.md)
-- [Feedback playbook](docs/FEEDBACK_PLAYBOOK.md)
 - [Release notes](docs/RELEASE_NOTES_v1.0.0.md)
 - [Release operations](docs/RELEASE_OPERATIONS.md)
